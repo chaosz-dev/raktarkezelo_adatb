@@ -171,6 +171,14 @@ nav th a:hover {
   border-radius: 10px;
 }
 
+nav th a:hover:first-child {
+  padding-right: 30px;
+}
+
+nav th a:hover:last-child {
+  padding-left: 30px;
+}
+
 nav th a:not(hover) {
   transition: all 300ms linear;
 }
