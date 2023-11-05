@@ -47,7 +47,29 @@ function loaded() {
       y.style.visibility = "visible";
     }
   }
+
+  function showLoggedInOptions() {
+    var cookie = getCookie("username");
+    var users = document.getElementsByClassName("usersPage");
+
+    if (cookie == null || users.length > 0 || window.location.pathname == "/users.html") {
+      return;
+    }
+
+    var menu = document.getElementById("menu").getElementsByTagName("tbody");
+    var th = document.createElement("th");
+    th.classList.add("usersPage");
+    var a = document.createElement("a");
+    a.href = "users.html";
+    a.innerText = "users";
+
+    th.appendChild(a);
+    menu[0].getElementsByTagName("tr")[0].appendChild(th);
+    console.log("Logged in only pages shown");
+  }
+
   showLoginRegister();
+  showLoggedInOptions();
 }
 
 function register() {
@@ -96,22 +118,67 @@ function login() {
       console.log(ret);
       console.log("Function returned.");
       document.cookie = "username=" + username + ";"
+
+      window.location.href = "index.html";
+
       return true;
     }
   }).catch((e) => console.log(e));
-
-  window.location.replace = "./index.html";
-
-  return true;
 }
 
 function logout() {
   console.log("Logout called.")
 
   document.cookie = 'username=' + getCookie("username") + ';max-age=-1' + ';path=/';
+
+  window.location.href = "index.html";
+
+  return true;
 }
 
 // Content functions
+
+function build_table(array, array_header) {
+  var table = document.createElement('table');
+  var tr = document.createElement('tr');
+
+  for (var i = 0; i < array_header.length; i++) {
+    var th = document.createElement('th');
+    var text = document.createTextNode(array_header[i]);
+    th.appendChild(text);
+    tr.appendChild(th);
+  }
+
+  table.appendChild(tr);
+  for (var i = 0; i < array.length; i++) {
+    var tr = document.createElement('tr');
+
+    var td1 = document.createElement('td');
+    var td2 = document.createElement('td');
+    var td3 = document.createElement('td');
+    var td4 = document.createElement('td');
+
+    var row_num = document.createTextNode(i);
+    var text1 = document.createTextNode(array[i].field1);
+    var text2 = document.createTextNode(array[i].field2);
+    var text3 = document.createTextNode(array[i].field3);
+
+    td1.appendChild(row_num);
+    td2.appendChild(text1);
+    td3.appendChild(text2);
+    td4.appendChild(text3);
+
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+    tr.appendChild(td4);
+
+    table.appendChild(tr);
+  }
+  table.classList.add("product_table")
+  document.getElementById("product_table").replaceWith(table);
+  console.log("Table appended.")
+}
 
 function get_products() {
   console.log("get_products called...");
@@ -122,47 +189,8 @@ function get_products() {
       console.log(ret);
       console.log(ret.length);
 
-      var table = document.createElement('table');
-      var tr = document.createElement('tr');
-      var array = ["#", "Name", "Unit Price", "Description"];
-
-      for (var i = 0; i < array.length; i++) {
-        var th = document.createElement('th');
-        var text = document.createTextNode(array[i]);
-        th.appendChild(text);
-        tr.appendChild(th);
-      }
-
-      table.appendChild(tr);
-      for (var i = 0; i < ret.length; i++) {
-        var tr = document.createElement('tr');
-
-        var td1 = document.createElement('td');
-        var td2 = document.createElement('td');
-        var td3 = document.createElement('td');
-        var td4 = document.createElement('td');
-
-        var row_num = document.createTextNode(i);
-        var text1 = document.createTextNode(ret[i].name);
-        var text2 = document.createTextNode(ret[i].unit_price);
-        var text3 = document.createTextNode(ret[i].description);
-
-        td1.appendChild(row_num);
-        td2.appendChild(text1);
-        td3.appendChild(text2);
-        td4.appendChild(text3);
-
-
-        tr.appendChild(td1);
-        tr.appendChild(td2);
-        tr.appendChild(td3);
-        tr.appendChild(td4);
-
-        table.appendChild(tr);
-      }
-      table.classList.add("product_table")
-      document.body.appendChild(table);
-      console.log("Table appended.")
+      var array_header = ["#", "Name", "Unit Price", "Description"];
+      build_table(ret, array_header);
     }
   }).catch((e) => console.error(e));
 }
@@ -175,6 +203,15 @@ function search_product() {
   }
 
   invoke('search_product', {
-    product_name: String(product_name),
-  }).then((ret) => { if (!ret) { console.log("Function returned."); return ret } }).catch((e) => console.error(e));
+    name: String(product_name),
+  }).then((ret) => {
+    if (ret) {
+      console.log("Function returned.");
+      console.log(ret);
+      console.log(ret.length);
+
+      var array_header = ["#", "Name", "Amount", "Address"];
+      build_table(ret, array_header);
+    }
+  }).catch((e) => console.error(e));
 }

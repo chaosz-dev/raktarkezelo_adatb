@@ -10,7 +10,7 @@ use mysql::*;
 type MySqlResult = Result<mysql::PooledConn, Error>;
 
 #[derive(Debug)]
-struct User {
+pub struct User {
   username: String,
   email: String,
   password: String,
@@ -24,6 +24,13 @@ pub struct Product {
   description: String,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct SearchProduct {
+  name: String,
+  amount: u64,
+  address: String,
+}
+
 impl Serialize for Product {
   fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -31,16 +38,29 @@ impl Serialize for Product {
     {
         // 3 is the number of fields in the struct.
         let mut state = serializer.serialize_struct("Product", 3)?;
-        state.serialize_field("name", &self.name)?;
-        state.serialize_field("unit_price", &self.unit_price)?;
-        state.serialize_field("description", &self.description)?;
+        state.serialize_field("field1", &self.name)?;
+        state.serialize_field("field2", &self.unit_price)?;
+        state.serialize_field("field3", &self.description)?;
+        state.end()
+    }
+}
+
+impl Serialize for SearchProduct {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        // 5 is the number of fields in the struct.
+        let mut state = serializer.serialize_struct("SearchProduct", 5)?;
+        state.serialize_field("field1", &self.name)?;
+        state.serialize_field("field2", &self.amount)?;
+        state.serialize_field("field3", &self.address)?;
         state.end()
     }
 }
 
 pub fn sql_conn() -> MySqlResult  {
   println!("Starting sql connection...");
-  //let url = "mysql://adatb:adatb@120.0.0.1:3306/datab";
   let pool = Pool::new("mysql://root@localhost:3306/adatb")?;
   println!("Succesful connection.");
   pool.get_conn()
@@ -62,7 +82,7 @@ pub async fn register_user(username: String, email: String, password: String) ->
   }
 
   println!("Starting slq querry...");
-  let users = conn.query_map("SELECT * FROM user", |(username, email, password, role)| {
+  let users = conn.query_map("SELECT * FROM user;", |(username, email, password, role)| {
       User { username, email, password, role }
     },
   );
@@ -75,7 +95,7 @@ pub async fn register_user(username: String, email: String, password: String) ->
   }
 
   let insert = conn.exec_drop(
-    r"INSERT INTO user (name, email, password) VALUES (?, ?, ?)",
+    r"INSERT INTO user (name, email, password) VALUES (?, ?, ?);",
     (&username, &email, &password)
   ).expect("Failed to insert data");
   println!("{:?}",insert);
@@ -95,7 +115,7 @@ pub async fn login(username: String, password: String) -> bool {
     return false;
   }
 
-  let mut query = String::from("SELECT * FROM user WHERE user.name LIKE '");
+  let mut query = String::from("SELECT * FROM user WHERE user.name LIKE ';");
   query.push_str(&(username + "'"));
   println!("Starting slq querry...");
   let users = conn.query_map(query, |(email, username, password, role)| {
@@ -115,7 +135,7 @@ pub async fn login(username: String, password: String) -> bool {
 pub async fn products() -> Vec<Product> {
   let mut conn = sql_conn().unwrap();
 
-  let products = conn.query_map("SELECT * FROM product", |(name, unit_price, description)| {
+  let products = conn.query_map("SELECT * FROM product;", |(name, unit_price, description)| {
     Product {name, unit_price, description}
   }).unwrap();
 
@@ -124,13 +144,17 @@ pub async fn products() -> Vec<Product> {
 
 
 #[tauri::command]
-pub async fn search_product(product_name: String) -> Vec<Product> {
+pub async fn search_product(name: String) -> Vec<SearchProduct> {
   let mut conn = sql_conn().unwrap();
 
-  let mut query = String::from("SELECT * FROM product WHERE name LIKE ");
-  query.push_str(&product_name);
-  let products = conn.query_map(query, |(name, unit_price, description)| {
-    Product {name, unit_price, description}
+  let query = format!("
+  SELECT product.name, contains.amount, storageSite.address
+  FROM product, contains, storageSite
+  WHERE contains.product_name = product.name
+  AND contains.storage_id = storageSite.id
+  AND product.name LIKE '{}';", name);
+  let products = conn.query_map(query, |(name, amount, address)| {
+    SearchProduct {name, amount, address}
   }).unwrap();
 
   products

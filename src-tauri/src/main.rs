@@ -12,7 +12,8 @@ fn main() {
   tauri::Builder::default()
     .invoke_handler(tauri::generate_handler![sql_handler::register_user,
                                             sql_handler::products,
-                                            sql_handler::login])
+                                            sql_handler::login,
+                                            sql_handler::search_product])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
