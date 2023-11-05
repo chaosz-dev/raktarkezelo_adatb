@@ -133,14 +133,6 @@ nav {
   opacity: 80%;
 }
 
-/*
-not sure if looks good
-nav:hover {
-  opacity: 100%;
-  transition: all 100ms linear;
-}
-*/
-
 nav table {
   width: 100%;    
   font-size: x-large;
@@ -183,15 +175,93 @@ nav th a:not(hover) {
   transition: all 300ms linear;
 }
 
-/*
-a:hover {
-  opacity: 100%;
-  display: inline-block;
-  color: #ffffff;
-  background-color: #4E4E4E;
-  padding: 10px;
-  border-radius: 20px;
-  cursor: none;
-  transition: all 200ms linear;
+table#header {
+  width: 100%;
 }
-*/
+
+table#header tr td:first-child {
+  width: 20%;
+}
+
+table#header tr td:nth-child(2) {
+  width: 60%;
+}
+
+table#header tr td:last-child {
+  width: 20%;
+  text-align: right;
+}
+
+table#header tr td:last-child tr td {
+  padding-top: 0%;
+  padding-bottom: 0%;
+}
+
+table#header tr td:last-child tr td a {
+  padding-top: 0%;
+  padding-bottom: 0%;
+}
+
+
+form input {
+  width: 30%;
+  border: none;
+  margin-bottom: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+form button {
+  width: 20%;
+  border: none;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center; 
+}
+
+div {
+  padding-top: 20px;
+}
+
+.center_div {
+  margin: auto;
+  text-align: center;
+}
+
+.product_table {
+  margin: 30px;
+  font-size: larger;
+  text-align: left;
+  border-top: 3px solid;
+  border-left: 3px solid;
+  border-color: #9c9c9c9d;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.product_table th {
+  text-align: center;
+  border-right: 1px solid;
+  border-color: #9c9c9c69;
+  padding: 10px;
+}
+
+.product_table th:last-child {
+  border: 0px;
+}
+
+.product_table td {
+  text-align: center;
+  border-right: 1px solid;
+  border-bottom: 1px solid;
+  border-color: #9c9c9c69;
+  padding: 10px;
+}
+.product_table td:last-child {
+  border-right: 0px;
+}
+
+.product_table tr:last-child td {
+  border-bottom: 0px;
+}

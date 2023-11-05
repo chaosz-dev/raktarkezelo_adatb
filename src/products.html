@@ -11,7 +11,7 @@
   <table id="header" 
     <tr>
       <td id="LoggedIn"> <button>Logout</button> </td>
-      <td> <h1> Main page </h1> </td>
+      <td> <h1> Products </h1> </td>
       <td> 
         <table id="RegisterLogin">
           <tr>
@@ -24,15 +24,19 @@
       </td>
     </tr>
   </table>
-    
+
+  <body onload="loaded()">
     <nav>
     <table id="menu" class="center">
       <tr>
-        <th> <a href="products.html">products</a> </th>
+        <th> <a href="index.html">index</a> </th>
         <th> <a href="search.html">search</a> </th>
       </tr>
     </table>
     </nav>
+
+    <script type="text/javascript"> get_products(); </script>
   
   </body>
+
 </html>

@@ -10,8 +10,8 @@
 
   <table id="header" 
     <tr>
-      <td id="LoggedIn"> <button>Logout</button> </td>
-      <td> <h1> Main page </h1> </td>
+      <td id="LoggedIn"> <button onclick="logout()">Logout</button> </td>
+      <td> <h1> Products </h1> </td>
       <td> 
         <table id="RegisterLogin">
           <tr>
@@ -24,15 +24,22 @@
       </td>
     </tr>
   </table>
-    
+
+  <body onload="loaded()">
     <nav>
     <table id="menu" class="center">
       <tr>
+        <th> <a href="index.html">index</a> </th>
         <th> <a href="products.html">products</a> </th>
-        <th> <a href="search.html">search</a> </th>
       </tr>
     </table>
     </nav>
+
+    <div class="center_div">
+      <input tpye="text" placeholder="Product name..." name="product_search" id="product_search" required>
+      <button type="submit" class="search_button" onclick="search_product()">Search</button>
+    </div>
   
   </body>
+
 </html>

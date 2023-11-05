@@ -7,11 +7,19 @@
     "withGlobalTauri" : true
   },
   "package": {
-    "productName": "adatb",
+    "productName": "Ráktárkezelő",
     "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
+      "dialog": {
+        "all": true,
+        "ask": true,
+        "confirm": true,
+        "message": true,
+        "open": true,
+        "save": true
+      },
       "all": false
     },
     "bundle": {
